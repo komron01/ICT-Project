@@ -1,0 +1,105 @@
+-- First of all, creating oridinary tables where we have no foreign keys
+
+CREATE TABLE Country(					
+Country_ID serial PRIMARY KEY,
+Country_name varchar,
+Country_location varchar);
+
+CREATE TABLE Client(
+Client_ID SERIAL,
+name VARCHAR,
+surname VARCHAR,
+birth DATE,
+email VARCHAR,
+bank_card INT,
+PRIMARY KEY (Client_ID)
+);
+
+CREATE TABLE Administrator(
+Admin_ID SERIAL,
+name VARCHAR,
+surname VARCHAR,
+email VARCHAR,
+PRIMARY KEY (Admin_ID)
+);
+
+CREATE TABLE Flight(
+Flight_ID serial PRIMARY KEY,
+Country_departure varchar,
+Country_destination varchar);
+
+CREATE TABLE Train(
+Train_ID serial PRIMARY KEY,
+City_departure varchar,
+City_destination varchar);
+
+CREATE TABLE Room(
+Room_ID serial PRIMARY KEY,
+Number_of_room int,
+Type varchar);
+
+-- Connecting the 
+CREATE TABLE Hotel(
+Hotel_ID serial PRIMARY KEY,
+Room_ID int,
+Hotel_name varchar,
+address varchar,
+CONSTRAINT fk_room
+      FOREIGN KEY (Room_ID) 
+	  REFERENCES Room(Room_ID)
+);
+
+CREATE TABLE Service(
+Service_ID serial PRIMARY KEY,
+Country_ID int,
+Flight_ID int,
+Train_ID int,
+Hotel_ID int,
+Room_ID int,
+	
+CONSTRAINT fk_room
+      FOREIGN KEY (Room_ID) 
+	  REFERENCES Room(Room_ID),
+	
+CONSTRAINT fk_hotel
+      FOREIGN KEY (Hotel_ID) 
+	  REFERENCES Hotel(Hotel_ID),
+	
+CONSTRAINT fk_country
+      FOREIGN KEY (Country_ID) 
+	  REFERENCES Country(Country_ID),
+	
+CONSTRAINT fk_flight
+      FOREIGN KEY (Flight_ID) 
+	  REFERENCES Flight(Flight_ID),	
+	
+CONSTRAINT fk_train
+      FOREIGN KEY (Train_ID) 
+	  REFERENCES Train(Train_ID)
+);
+
+
+
+CREATE TABLE Payments(
+Payment_ID SERIAL,
+Client_ID INT,
+Booking_ID INT,
+Payment DECIMAL,
+Payment_Due DATE,
+PRIMARY KEY (Payment_ID),
+CONSTRAINT fk_paymentclient
+    FOREIGN KEY (Client_ID) REFERENCES Client(Client_ID)
+);
+
+CREATE TABLE Bookings(
+Booking_ID SERIAL,
+Client_ID INT,
+Payment_ID INT,
+Administrator_ID INT,
+Service_ID INT,
+PRIMARY KEY (Booking_ID),
+FOREIGN KEY (Payment_ID) REFERENCES Payments(Payment_ID),
+FOREIGN KEY (Administrator_ID) REFERENCES Administrator(Admin_ID),
+FOREIGN KEY (Service_ID) REFERENCES Service(Service_ID),
+FOREIGN KEY (Client_ID) REFERENCES Client(Client_ID)
+);
